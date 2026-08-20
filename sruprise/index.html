@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Selen</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #ff4b6e,
+        #ff9eb1
+    );
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    text-align: center;
+
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 520px;
+
+    padding: 35px 25px;
+
+    background: rgba(255,255,255,0.15);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.2);
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* BASLANGIC */
+
+#startScreen {
+    display: block;
+}
+
+#startScreen h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+button {
+    margin-top: 25px;
+
+    padding: 15px 35px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: white;
+    color: #ff4b6e;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+/* SEVGI EKRANI */
+
+#loveScreen {
+    display: none;
+}
+
+
+/* KEDI */
+
+#topCat {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 5px;
+}
+
+#topCatGif {
+    width: 110px;
+    height: 110px;
+
+    object-fit: contain;
+}
+
+
+/* GOSTERGE */
+
+.gauge {
+    position: relative;
+
+    width: 400px;
+    height: 220px;
+
+    max-width: 100%;
+
+    margin: 10px auto 5px;
+}
+
+
+/* RENKLI YARIM DAIRE */
+
+.gauge-ring {
+    position: absolute;
+
+    width: 320px;
+    height: 160px;
+
+    left: 50%;
+    top: 10px;
+
+    transform: translateX(-50%);
+
+    border-radius: 320px 320px 0 0;
+
+    background:
+        repeating-conic-gradient(
+            from 270deg,
+
+            #ffd6df 0deg 16deg,
+            white 16deg 18deg,
+
+            #ffc0ce 18deg 34deg,
+            white 34deg 36deg,
+
+            #ffa6b9 36deg 52deg,
+            white 52deg 54deg,
+
+            #ff8ca4 54deg 70deg,
+            white 70deg 72deg,
+
+            #ff718d 72deg 88deg,
+            white 88deg 90deg,
+
+            #ff5678 90deg 106deg,
+            white 106deg 108deg,
+
+            #ff3d63 108deg 124deg,
+            white 124deg 126deg,
+
+            #e72b53 126deg 142deg,
+            white 142deg 144deg,
+
+            #c9003d 144deg 160deg,
+            white 160deg 162deg,
+
+            #a80032 162deg 180deg
+        );
+
+    overflow: hidden;
+}
+
+
+/* IC BOSLUK */
+
+.gauge-ring::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 125px;
+
+    left: 35px;
+    top: 35px;
+
+    background: #ff7892;
+
+    border-radius: 250px 250px 0 0;
+}
+
+
+/* YUZDELER */
+
+.number {
+    position: absolute;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    z-index: 5;
+
+    transform: translate(-50%, -50%);
+}
+
+.n0 {
+    left: 10%;
+    top: 78%;
+}
+
+.n10 {
+    left: 15%;
+    top: 57%;
+}
+
+.n20 {
+    left: 23%;
+    top: 37%;
+}
+
+.n30 {
+    left: 33%;
+    top: 21%;
+}
+
+.n40 {
+    left: 42%;
+    top: 13%;
+}
+
+.n50 {
+    left: 50%;
+    top: 10%;
+}
+
+.n60 {
+    left: 58%;
+    top: 13%;
+}
+
+.n70 {
+    left: 67%;
+    top: 21%;
+}
+
+.n80 {
+    left: 77%;
+    top: 37%;
+}
+
+.n90 {
+    left: 85%;
+    top: 57%;
+}
+
+.n100 {
+    left: 90%;
+    top: 78%;
+}
+
+
+/* IBRE */
+
+.needle {
+    position: absolute;
+
+    width: 5px;
+    height: 125px;
+
+    left: 50%;
+    top: 35px;
+
+    background: #222;
+
+    border-radius: 10px;
+
+    transform-origin: 50% 100%;
+
+    transform:
+        translateX(-50%)
+        rotate(-90deg);
+
+    transition:
+        transform 0.15s ease;
+
+    z-index: 10;
+}
+
+
+/* IBRE MERKEZI */
+
+.needle-center {
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    left: 50%;
+    top: 148px;
+
+    transform:
+        translate(-50%, -50%);
+
+    background: #222;
+
+    border-radius: 50%;
+
+    z-index: 11;
+}
+
+
+/* BAR */
+
+input[type="range"] {
+    width: 100%;
+
+    margin-top: 15px;
+
+    accent-color: #ff3d63;
+
+    cursor: pointer;
+}
+
+
+/* MESAJ */
+
+#message {
+    min-height: 60px;
+
+    margin-top: 20px;
+
+    font-size: 21px;
+
+    font-weight: bold;
+}
+
+
+/* HEDIYE BUTONU */
+
+#giftButton {
+    display: none;
+
+    margin-top: 20px;
+}
+
+
+/* HEDIYELER */
+
+#giftScreen {
+    display: none;
+}
+
+.gifts {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 20px;
+
+    margin-top: 35px;
+}
+
+.gift {
+    width: 85px;
+    height: 85px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 50px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.gift:hover {
+    transform: scale(1.1);
+}
+
+#giftMessage {
+    margin-top: 30px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+
+/* KEDI HEDIYESI */
+
+.cat-gif {
+    width: 250px;
+
+    max-width: 100%;
+
+    border-radius: 15px;
+
+    margin-top: 20px;
+}
+
+
+/* FOTO HEDIYESI */
+
+.photo-gift {
+    width: 280px;
+
+    max-width: 100%;
+
+    border-radius: 20px;
+
+    margin-top: 20px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.25);
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- BASLANGIC -->
+
+    <div id="startScreen">
+
+        <h1>
+             repostunda mi kalsaydi?
+        </h1>
+
+        <p>
+            👀
+        </p>
+
+        <button onclick="startGame()">
+            DEVAM ET ❤️
+        </button>
+
+    </div>
+
+
+    <!-- SEVGI -->
+
+    <div id="loveScreen">
+
+
+        <!-- KEDI -->
+
+        <div id="topCat">
+
+            <img
+                src="aglayan kedi.gif"
+                id="topCatGif"
+                alt="Kedi">
+
+        </div>
+
+
+        <!-- GOSTERGE -->
+
+        <div class="gauge">
+
+            <div class="gauge-ring"></div>
+
+
+            <span class="number n0">0</span>
+            <span class="number n10">10</span>
+            <span class="number n20">20</span>
+            <span class="number n30">30</span>
+            <span class="number n40">40</span>
+            <span class="number n50">50</span>
+            <span class="number n60">60</span>
+            <span class="number n70">70</span>
+            <span class="number n80">80</span>
+            <span class="number n90">90</span>
+            <span class="number n100">100</span>
+
+
+            <div
+                class="needle"
+                id="needle">
+            </div>
+
+
+            <div class="needle-center"></div>
+
+        </div>
+
+
+        <!-- BAR -->
+
+        <input
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+            id="loveBar">
+
+
+        <!-- MESAJ -->
+
+        <div id="message">
+            Sevgi barini hareket ettir
+        </div>
+
+
+        <!-- DEVAM -->
+
+        <button
+            id="giftButton"
+            onclick="showGifts()">
+
+            DEVAM ET 🎁
+
+        </button>
+
+
+    </div>
+
+
+    <!-- HEDIYE EKRANI -->
+
+    <div id="giftScreen">
+
+
+        <h1>
+            🎁 Hediyelerini sec 🎁
+        </h1>
+
+
+        <p>
+            Bir tanesini ac bakalim 👀
+        </p>
+
+
+        <div class="gifts">
+
+
+            <!-- 1. FOTO -->
+
+            <div
+                class="gift"
+                onclick="openGift(1)">
+
+                🎁
+
+            </div>
+
+
+            <!-- 2. KEDI -->
+
+            <div
+                class="gift"
+                onclick="openGift(2)">
+
+                🎁
+
+            </div>
+
+
+            <!-- 3. OYUN -->
+
+            <div
+                class="gift"
+                onclick="openGift(3)">
+
+                🎁
+
+            </div>
+
+
+        </div>
+
+
+        <div id="giftMessage"></div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* BASLANGIC */
+
+function startGame() {
+
+    document.getElementById("startScreen").style.display =
+        "none";
+
+    document.getElementById("loveScreen").style.display =
+        "block";
+
+}
+
+
+/* ELEMANLAR */
+
+const loveBar =
+    document.getElementById("loveBar");
+
+const message =
+    document.getElementById("message");
+
+const needle =
+    document.getElementById("needle");
+
+const giftButton =
+    document.getElementById("giftButton");
+
+const topCatGif =
+    document.getElementById("topCatGif");
+
+
+/* BAR */
+
+loveBar.addEventListener("input", function() {
+
+
+    const value =
+        Number(loveBar.value);
+
+
+    /* IBRE */
+
+    const angle =
+        -90 + (value * 1.8);
+
+
+    needle.style.transform =
+        "translateX(-50%) rotate(" +
+        angle +
+        "deg)";
+
+
+    /* KEDI DEGISIMI */
+
+    if (value <= 20) {
+
+        topCatGif.src =
+            "aglayan kedi.gif";
+
+    }
+
+    else if (value <= 40) {
+
+        topCatGif.src =
+            "uzgun kedi.gif";
+
+    }
+
+    else if (value <= 60) {
+
+        topCatGif.src =
+            "normal kedi.gif";
+
+    }
+
+    else if (value <= 80) {
+
+        topCatGif.src =
+            "mutlu kedi.gif";
+
+    }
+
+    else {
+
+        topCatGif.src =
+            "cok mutlu kedi.gif";
+
+    }
+
+
+    /* MESAJLAR */
+
+    if (value === 0) {
+
+        message.innerText =
+            "Sevgi barini hareket ettir";
+
+    }
+
+    else if (value < 15) {
+
+        message.innerText =
+            "Ciddi misin?";
+
+    }
+
+    else if (value < 30) {
+
+        message.innerText =
+            "Bu kadar mi?";
+
+    }
+
+    else if (value < 45) {
+
+        message.innerText =
+            "Daha fazlasini bekliyordum";
+
+    }
+
+    else if (value < 60) {
+
+        message.innerText =
+            "Iyi iyi, fena degil";
+
+    }
+
+    else if (value < 75) {
+
+        message.innerText =
+            "Oha, baya yukseliyor";
+
+    }
+
+    else if (value < 90) {
+
+        message.innerText =
+            "Tamam, ikna olmaya basladim";
+
+    }
+
+    else if (value < 100) {
+
+        message.innerText =
+            "Sonuna kadar cikacak misin?";
+
+    }
+
+    else {
+
+        message.innerText =
+            "TAMAM! IKNA OLDUM! ❤️";
+
+
+        giftButton.style.display =
+            "inline-block";
+
+    }
+
+});
+
+
+/* HEDIYELERE GEC */
+
+function showGifts() {
+
+    document.getElementById("loveScreen").style.display =
+        "none";
+
+    document.getElementById("giftScreen").style.display =
+        "block";
+
+}
+
+
+/* HEDIYE */
+
+function openGift(number) {
+
+
+    const giftMessage =
+        document.getElementById("giftMessage");
+
+
+    /* 1. KUTU - FOTO */
+
+    if (number === 1) {
+
+
+        const firstGift =
+            document.querySelectorAll(".gift")[0];
+
+
+        firstGift.style.display =
+            "none";
+
+
+        giftMessage.innerHTML =
+            '<img src="selen.jpg" alt="Selen" class="photo-gift">' +
+            '<p>fotografi istememin amaci buydu essek gozlu </p>';
+
+    }
+
+
+    /* 2. KUTU - KEDI */
+
+    else if (number === 2) {
+
+
+        const secondGift =
+            document.querySelectorAll(".gift")[1];
+
+
+        secondGift.style.display =
+            "none";
+
+
+        giftMessage.innerHTML =
+            '<img src="kedi.gif" alt="Kedi" class="cat-gif">' +
+            '<p>kucuk bi opucuk❤️</p>';
+
+    }
+
+
+    /* 3. KUTU - OYUN */
+
+    else {
+
+    const thirdGift =
+        document.querySelectorAll(".gift")[2];
+
+    thirdGift.style.display =
+        "none";
+
+
+    giftMessage.innerHTML = `
+
+        <div id="quiz">
+
+            <h2>
+                 BENI NE KADAR TANIYORSUN? ❤️
+            </h2>
+
+
+            <!-- SORU 1 -->
+
+            <div class="question">
+
+                <p>
+                    Ben nereliyim ?
+                </p>
+
+                <button onclick="answer(1, 1)">
+                    Denizli
+                </button>
+
+                <button onclick="answer(1, 2)">
+                    Burdur
+                </button>
+
+                <button onclick="answer(1, 3)">
+                    Antalya
+                </button>
+
+            </div>
+
+
+            <!-- SORU 2 -->
+
+            <div class="question">
+
+                <p>
+                    Dogum tarihim ne ?
+                </p>
+
+                <button onclick="answer(2, 1)">
+                    12 Mayis
+                </button>
+
+                <button onclick="answer(2, 2)">
+                    21 Ocak
+                </button>
+
+                <button onclick="answer(2, 3)">
+                    04 Nisan
+                </button>
+
+            </div>
+
+
+            <!-- SORU 3 -->
+
+            <div class="question">
+
+                <p>
+                    Boyum kaç ?
+                </p>
+
+                <button onclick="answer(3, 1)">
+                    178
+                </button>
+
+                <button onclick="answer(3, 2)">
+                    183
+                </button>
+
+                <button onclick="answer(3, 3)">
+                    180
+                </button>
+
+            </div>
+
+
+            <div id="quizResult"></div>
+
+        </div>
+
+    `;
+
+}
+
+
+}
+
+let score = 0;
+
+let answered = 0;
+
+
+/* DOGRU CEVAPLAR */
+
+const correctAnswers = {
+
+    1: 2,
+
+    2: 3,
+
+    3: 3
+
+};
+
+
+function answer(question, selected) {
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".question:nth-child(" +
+            question +
+            ") button"
+        );
+
+
+    /* BUTONLARI KAPAT */
+
+    const currentQuestion =
+        document.querySelectorAll(
+            ".question"
+        )[question - 1];
+
+
+    const allButtons =
+        currentQuestion.querySelectorAll(
+            "button"
+        );
+
+
+    allButtons.forEach(function(button) {
+
+        button.disabled = true;
+
+    });
+
+
+    /* KONTROL */
+
+    if (
+        selected ===
+        correctAnswers[question]
+    ) {
+
+        score++;
+
+    }
+
+
+    answered++;
+
+
+    /* SON SORU */
+
+    if (answered === 3) {
+
+        const result =
+            document.getElementById(
+                "quizResult"
+            );
+
+
+        if (score === 3) {
+
+            result.innerText =
+                "TAM ISABET! BENI COK IYI TANIYORSUN ❤️";
+
+        }
+
+        else if (score === 2) {
+
+            result.innerText =
+                "FENA DEGIL 😌 2/3 DOGRU!";
+
+        }
+
+        else if (score === 1) {
+
+            result.innerText =
+                "OHA 😭 SADECE 1 TANE DOGRU!";
+
+        }
+
+        else {
+
+            result.innerText =
+                "BENI HIC TANIMIYORSUN 😭😂";
+
+        }
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
